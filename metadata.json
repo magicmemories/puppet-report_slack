@@ -1,0 +1,60 @@
+{
+  "name": "karmafeast-report_slack",
+  "version": "1.0.0",
+  "author": "karmafeast",
+  "license": "Apache-2.0",
+  "summary": "A Puppet report handler for Slack",
+  "source": "https://github.com/karmafeast/report_slack.git",
+  "project_page": "https://github.com/karmafeast/report_slack",
+  "issues_url": "https://github.com/karmafeast/report_slack/issues",
+  "tags": [
+    "slack",
+    "notifications",
+    "report"
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "14.04",
+        "16.04"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "puppetlabs/puppetserver_gem",
+      "version_requirement": ">= 1.0.0 < 3.0.0"
+    },
+    {
+      "name": "puppetlabs/inifile",
+      "version_requirement": ">= 2.4.0 < 4.0.0"
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.10.0 < 8.0.0"
+    }
+  ]
+}

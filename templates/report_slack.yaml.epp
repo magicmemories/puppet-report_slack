@@ -1,0 +1,95 @@
+<%- | String $slack_default_webhook,
+  String $slack_failed_color,
+  String $slack_failed_emoji,
+  String $slack_changed_color,
+  String $slack_changed_emoji,
+  String $slack_unchanged_color,
+  String $slack_unchanged_emoji,
+  String $slack_noop_color,
+  String $slack_noop_emoji,
+  String $slack_noop_event_color,
+  String $slack_changed_event_color,
+  String $slack_failed_event_color,
+  Boolean $slack_events_as_attach,
+  Boolean $slack_include_eval_time,
+  Boolean $slack_include_run_time_metrics,
+  Integer $slack_max_attach_count,
+  Array[String] $slack_time_metrics_keys,
+  Array[String] $slack_default_statuses,
+  Array[String] $slack_attach_log_levels,
+  Optional[Array[String]] $slack_attach_log_tags = undef,
+  Optional[Array[String]] $slack_include_patterns = undef,
+  Optional[Array[String]] $slack_mute_patterns = undef,
+  Optional[Hash[String, Hash[String, Array[String]]]] $slack_routing_data = undef
+| -%>
+<% include stdlib -%>
+---
+:slack_report_default_webhook: '<%= $slack_default_webhook %>'
+:slack_report_failed_color: '<%= $slack_failed_color %>'
+:slack_report_failed_emoji: '<%= $slack_failed_emoji %>'
+:slack_report_changed_color: '<%= $slack_changed_color %>'
+:slack_report_changed_emoji: '<%= $slack_changed_emoji %>'
+:slack_report_unchanged_color: '<%= $slack_unchanged_color %>'
+:slack_report_unchanged_emoji: '<%= $slack_unchanged_emoji %>'
+:slack_report_noop_color: '<%= $slack_noop_color %>'
+:slack_report_noop_emoji: '<%= $slack_noop_emoji %>'
+:slack_report_noop_event_color: '<%= $slack_noop_event_color %>'
+:slack_report_changed_event_color: '<%= $slack_changed_event_color %>'
+:slack_report_failed_event_color: '<%= $slack_failed_event_color %>'
+:slack_report_events_as_attach: <%= $slack_events_as_attach %>
+:slack_report_include_eval_time: <%= $slack_include_eval_time %>
+:slack_report_include_run_time_metrics: <%= $slack_include_run_time_metrics %>
+:slack_report_max_attach_count: <%= $slack_max_attach_count %>
+<% if $slack_mute_patterns { -%>
+:slack_report_mute_patterns:
+<% $slack_mute_patterns.each |$pattern| { -%>
+  - '<%= $pattern %>'
+<% } -%>
+<% } -%>
+<% if $slack_include_patterns { -%>
+:slack_report_include_patterns:
+<% $slack_include_patterns.each |$pattern| { -%>
+  - '<%= $pattern %>'
+<% } -%>
+<% } -%>
+:slack_report_time_metric_keys:
+<% $slack_time_metrics_keys.each |$metric| { -%>
+  - '<%= $metric %>'
+<% } -%>
+:slack_report_default_statuses:
+<% $slack_default_statuses.each |$status| { -%>
+  - '<%= $status %>'
+<% } -%>
+:slack_attach_log_levels:
+<% $slack_attach_log_levels.each |$level| { -%>
+  - '<%= $level %>'
+<% } -%>
+<% if $slack_attach_log_tags { -%>
+:slack_attach_log_tags:
+<% $slack_attach_log_tags.each |$tag| { -%>
+  - '<%= $tag %>'
+<% } -%>
+<% } -%>
+<% if $slack_routing_data { -%>
+:slack_report_routing_data:
+<% $slack_routing_data.each |$pattern, $inner_hash| { -%>
+<% if !('report_states' in $inner_hash) and !('webhooks' in $inner_hash){ -%>
+  '<%= $pattern %>': {}
+<% } else { -%>
+  '<%= $pattern %>':
+<% if 'report_states' in $inner_hash { -%>
+    report_states:
+<% $inner_hash['report_states'].each |$state| { -%>
+      - '<%= $state %>'
+<% } -%>
+<% } -%>
+<% if 'webhooks' in $inner_hash { -%>
+    webhooks:
+<% $inner_hash['webhooks'].each |$hook| { -%>
+      - '<%= $hook %>'
+<% } -%>
+<% } -%>
+<% } -%>
+<% } -%>
+<% } -%>
+
