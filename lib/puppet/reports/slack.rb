@@ -30,6 +30,8 @@ Puppet::Reports.register_report(:slack) do
   SLACK_INCLUDE_ENVIRONMENT_PATTERNS = Array(config[:slack_report_environment_include_patterns] || []) #if there's nothing, we'll include all
   SLACK_MUTE_ENVIRONMENT_PATTERNS = Array(config[:slack_report_environment_mute_patterns] || []) #mute checked first and overrides include
   SLACK_ROUTING_DATA = Hash(config[:slack_report_routing_data] || {})
+  SLACK_PUPPETBOARD_URL = config[:slack_puppetboard_url] || false
+  SLACK_ONLY_LINK_REPORT = config[:slack_only_link_report] || false
   # set the default colors if not defined in the config
   # !!!!emoji is MANDATORY!!!!!
   SLACK_FAILED_COLOR = config[:slack_report_failed_color] || 'danger'
@@ -363,7 +365,7 @@ Puppet::Reports.register_report(:slack) do
       fields = append_fields_runtime_metrics(fields, self.metrics, PUPPET_TIME_METRICS_KEYNAMES)
     end
 
-    if changed_resources.length > 0
+    if changed_resources.length > 0 && !SLACK_ONLY_LINK_REPORT
       if SLACK_EVENTS_AS_ATTACH && (changed_resources.length + failed_resources.length) <= SLACK_MAX_ATTACH_COUNT
         changed_attachment_array = get_items_attachment_array('changed', SLACK_INCLUDE_EVAL_TIME, changed_resources, self.noop)
       else
@@ -371,7 +373,7 @@ Puppet::Reports.register_report(:slack) do
       end
     end
 
-    if failed_resources.length > 0
+    if failed_resources.length > 0 && !SLACK_ONLY_LINK_REPORT
       if SLACK_EVENTS_AS_ATTACH && (changed_resources.length + failed_resources.length) <= SLACK_MAX_ATTACH_COUNT
         failed_attachment_array = get_items_attachment_array('failed', SLACK_INCLUDE_EVAL_TIME, failed_resources, self.noop)
       else
@@ -386,6 +388,11 @@ Puppet::Reports.register_report(:slack) do
         color: "#{color(self.status, self.noop, false)}",
         mrkdwn: true
     }
+
+    if SLACK_PUPPETBOARD_URL
+      msg_attach[:title] = "Puppet Report"
+      msg_attach[:title_link] = "#{SLACK_PUPPETBOARD_URL}/report/#{self.host}/#{self.configuration_version}"
+    end
 
     log_attach = {
         fallback: "Relevant Log Entries raw fallback: #{logstring}",

@@ -13,10 +13,12 @@
   Boolean $slack_events_as_attach,
   Boolean $slack_include_eval_time,
   Boolean $slack_include_run_time_metrics,
+  Boolean $slack_only_link_report,
   Integer $slack_max_attach_count,
   Array[String] $slack_time_metrics_keys,
   Array[String] $slack_default_statuses,
   Array[String] $slack_attach_log_levels,
+  Optional[String] $slack_puppetboard_url,
   Optional[Array[String]] $slack_attach_log_tags = undef,
   Optional[Array[String]] $slack_environment_include_patterns = undef,
   Optional[Array[String]] $slack_environment_mute_patterns = undef,
@@ -42,6 +44,10 @@
 :slack_report_include_eval_time: <%= $slack_include_eval_time %>
 :slack_report_include_run_time_metrics: <%= $slack_include_run_time_metrics %>
 :slack_report_max_attach_count: <%= $slack_max_attach_count %>
+:slack_only_link_report: <%= $slack_only_link_report %>
+<% if %slack_puppetboard_url { -%>
+:slack_puppetboard_url: <%= $slack_puppetboard_url %>
+<% } -%>
 <% if $slack_mute_patterns { -%>
 :slack_report_mute_patterns:
 <% $slack_mute_patterns.each |$pattern| { -%>
