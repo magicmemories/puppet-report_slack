@@ -61,7 +61,7 @@ class report_slack (
         'slack_attach_log_levels'            => $slack_attach_log_levels,
         'slack_attach_log_tags'              => $slack_attach_log_tags,
         'slack_max_attach_count'             => $slack_max_attach_count,
-        'slack_environemnt_include_patterns' => $slack_environment_include_patterns,
+        'slack_environment_include_patterns' => $slack_environment_include_patterns,
         'slack_environment_mute_patterns'    => $slack_environment_mute_patterns,
         'slack_include_patterns'             => $slack_include_patterns,
         'slack_mute_patterns'                => $slack_mute_patterns,
