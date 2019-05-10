@@ -18,6 +18,8 @@
   Array[String] $slack_default_statuses,
   Array[String] $slack_attach_log_levels,
   Optional[Array[String]] $slack_attach_log_tags = undef,
+  Optional[Array[String]] $slack_environment_include_patterns = undef,
+  Optional[Array[String]] $slack_environment_mute_patterns = undef,
   Optional[Array[String]] $slack_include_patterns = undef,
   Optional[Array[String]] $slack_mute_patterns = undef,
   Optional[Hash[String, Hash[String, Array[String]]]] $slack_routing_data = undef
@@ -49,6 +51,18 @@
 <% if $slack_include_patterns { -%>
 :slack_report_include_patterns:
 <% $slack_include_patterns.each |$pattern| { -%>
+  - '<%= $pattern %>'
+<% } -%>
+<% } -%>
+<% if $slack_environment_mute_patterns { -%>
+:slack_report_environment_mute_patterns:
+<% $slack_environment_mute_patterns.each |$pattern| { -%>
+  - '<%= $pattern %>'
+<% } -%>
+<% } -%>
+<% if $slack_environment_include_patterns { -%>
+:slack_report_environment_include_patterns:
+<% $slack_environment_include_patterns.each |$pattern| { -%>
   - '<%= $pattern %>'
 <% } -%>
 <% } -%>

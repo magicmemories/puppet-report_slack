@@ -27,6 +27,8 @@ Puppet::Reports.register_report(:slack) do
   PUPPET_TIME_METRICS_KEYNAMES = Array(config[:slack_report_time_metric_keys] || %w(config_retrieval total))
   SLACK_INCLUDE_REGEX_PATTERNS = Array(config[:slack_report_include_patterns] || []) #if there's nothing, we'll include all
   SLACK_MUTE_REGEX_PATTERNS = Array(config[:slack_report_mute_patterns] || []) #mute checked first and overrides include
+  SLACK_INCLUDE_ENVIRONMENT_PATTERNS = Array(config[:slack_report_environment_include_patterns] || []) #if there's nothing, we'll include all
+  SLACK_MUTE_ENVIRONMENT_PATTERNS = Array(config[:slack_report_environment_mute_patterns] || []) #mute checked first and overrides include
   SLACK_ROUTING_DATA = Hash(config[:slack_report_routing_data] || {})
   # set the default colors if not defined in the config
   # !!!!emoji is MANDATORY!!!!!
@@ -314,6 +316,19 @@ Puppet::Reports.register_report(:slack) do
         return
       end
     end
+
+    if SLACK_MUTE_ENVIRONMENT_PATTERNS.length > 0
+      if is_host_blocked(self.environment, SLACK_MUTE_ENVIRONMENT_PATTERNS, true, 'matching mute patterns')
+        return
+      end
+    end
+
+    if SLACK_INCLUDE_ENVIRONMENT_PATTERNS.length > 0
+      if is_host_blocked(self.host, SLACK_INCLUDE_REGEX_PATTERNS, false, 'NOT matching include patterns')
+        return
+      end
+    end
+
 
     if SLACK_ROUTING_DATA.length > 0
       routing_targets = get_states_across_routing(self.host, self.status, SLACK_ROUTING_DATA, SLACK_DEFAULT_STATUSES, SLACK_DEFAULT_WEBHOOK)
