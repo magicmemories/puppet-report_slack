@@ -4,6 +4,7 @@
 class report_slack (
   String[1] $slack_default_webhook,
   Boolean $enabled                                                 = true,
+  Boolean $enforce_ini_setting                                     = true,
   Array[String] $slack_default_statuses                            = [ 'failed', 'changed' ],
   Array[String] $slack_attach_log_levels                           = ['warning', 'err', 'alert', 'emerg', 'crit'],
   Array[String] $slack_time_metrics_keys                           = ['config_retrieval', 'total'],
@@ -72,19 +73,21 @@ class report_slack (
     provider => $gem_provider,
   }
 
-  $report_ensure = $enabled ? {
-    true  => present,
-    false => absent,
-  }
+  if $enforce_ini_setting {
+    $report_ensure = $enabled ? {
+      true  => present,
+      false => absent,
+    }
 
-  ini_subsetting { 'slack reporting':
-    ensure               => $report_ensure,
-    path                 => $settings::config,
-    section              => 'master',
-    setting              => 'reports',
-    subsetting_separator => ',',
-    subsetting           => 'slack',
-    value                => '',
+    ini_subsetting { 'slack reporting':
+      ensure               => $report_ensure,
+      path                 => $settings::config,
+      section              => 'master',
+      setting              => 'reports',
+      subsetting_separator => ',',
+      subsetting           => 'slack',
+      value                => '',
+    }
   }
 
   Service <| title == $puppetmaster_service |> {
