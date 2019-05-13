@@ -326,7 +326,7 @@ Puppet::Reports.register_report(:slack) do
     end
 
     if SLACK_INCLUDE_ENVIRONMENT_PATTERNS.length > 0
-      if is_host_blocked(self.host, SLACK_INCLUDE_REGEX_PATTERNS, false, 'NOT matching include patterns')
+      if is_host_blocked(self.host, SLACK_INCLUDE_ENVIRONMENT_PATTERNS, false, 'NOT matching include patterns')
         return
       end
     end
